@@ -23,9 +23,9 @@ st_autorefresh(interval=60 * 1000, key="auto_refresh")
 # --- Buscar chamados ---
 def buscar_chamados_agendamento():
     query = {
-        'jql': 'project = FSA AND status = AGENDAMENTO',
+        'jql': 'project = TE AND resolution = Unresolved AND status = "Pendente Agendamento" AND type = "[System] Incidente"',
         'maxResults': 100,
-        'fields': 'summary,customfield_14954,customfield_14829,customfield_14825,customfield_12374,customfield_12271,customfield_11993,customfield_11994,customfield_11948'
+        'fields': 'summary,customfield_14954,customfield_16219,customfield_16218,,customfield_12271,customfield_12075,customfield_11995,customfield_16220'
     }
     res = requests.get(f"{JIRA_URL}/rest/api/3/search", headers=HEADERS, auth=AUTH, params=query)
     if res.status_code != 200:
@@ -41,13 +41,12 @@ def agrupar_por_loja(chamados):
         loja = fields.get("customfield_14954", {}).get("value", "Loja Desconhecida")
         agrupado[loja].append({
             "key": issue["key"],
-            "pdv": fields.get("customfield_14829", "--"),
-            "ativo": fields.get("customfield_14825", {}).get("value", "--"),
+            "escola": fields.get("customfield_16219", "--"),
+            "ativo": fields.get("customfield_16220", {}).get("value", "--"),
             "problema": fields.get("customfield_12374", "--"),
             "endereco": fields.get("customfield_12271", "--"),
-            "estado": fields.get("customfield_11948", {}).get("value", "--"),
-            "cep": fields.get("customfield_11993", "--"),
-            "cidade": fields.get("customfield_11994", "--")
+            "estado": fields.get("customfield_12075", {}).get("value", "--"),
+            "bairro": fields.get("customfield_11995", "--")
         })
     return agrupado
 
